@@ -131,10 +131,10 @@ namespace UsersAPI.Controllers
 
         [HttpDelete("{login}")]
         [Authorize(Roles = "Admin")]
-        public async Task<IActionResult> Delete(string login)
+        public async Task<IActionResult> Delete(string login, [FromQuery] bool soft = true)
         {
             var admin = User.Identity?.Name ?? "";
-            var result = await _userService.Delete(login, admin);
+            var result = await _userService.Delete(login, admin, soft);
             return result.Success ? Ok() : BadRequest(result.Info);
         }
 

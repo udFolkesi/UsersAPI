@@ -120,13 +120,17 @@ namespace BLL.Services
             => await _userRepository.GetOlderThanAsync(age);
 
         // Delete
-        public async Task<IResult> Delete(string login, string adminLogin)
+        public async Task<IResult> Delete(string login, string adminLogin, bool soft)
         {
             var user = await _userRepository.GetByLoginAsync(login);
-            if (user == null) 
+            if (user == null)
                 return new Result(false, "User not found");
 
-            await _userRepository.DeleteAsync(user, adminLogin);
+            if (soft)
+                await _userRepository.DeleteSoftAsync(user, adminLogin);
+            else
+                await _userRepository.DeleteAsync(user);
+
             return new Result(true, null);
         }
 

@@ -9,5 +9,6 @@ namespace DAL.Repositories.Abstractions
         Task<User?> GetByLoginAndPasswordAsync(string login, string password);
         Task<IEnumerable<User>> GetOlderThanAsync(int age);
         Task RestoreAsync(User user);
+        Task DeleteSoftAsync(User user, string revokedBy);
     }
 }

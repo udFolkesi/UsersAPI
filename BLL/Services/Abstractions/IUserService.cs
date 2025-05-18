@@ -14,7 +14,7 @@ namespace BLL.Services.Abstractions
         Task<User?> GetByLoginAsync(string login);
         Task<User?> GetByCredentialsAsync(string login, string password);
         Task<IEnumerable<User>> GetOlderThanAsync(int age);
-        Task<IResult> Delete(string login, string adminLogin);
+        Task<IResult> Delete(string login, string adminLogin, bool soft);
         Task<IResult> RestoreAsync(string login);
     }
 }

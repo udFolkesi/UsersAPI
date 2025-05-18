@@ -8,6 +8,6 @@ namespace DAL.Repositories.Abstractions
     {
         Task AddAsync(TEntity entity);
         Task UpdateAsync(TEntity entity);
-        Task DeleteAsync(TEntity entity, string revokedBy);
+        Task DeleteAsync(TEntity entity);
     }
 }
