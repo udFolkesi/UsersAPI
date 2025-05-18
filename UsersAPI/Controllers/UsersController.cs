@@ -20,17 +20,6 @@ namespace UsersAPI.Controllers
             _authService = authService;
         }
 
-        [HttpPost("/token")]
-        public async Task<IActionResult> GetToken(string login, string password)
-        {
-            var result = await _authService.AuthenticateAsync(login, password);
-
-            if (!result.IsSuccess)
-                return Unauthorized(new { error = result.Error });
-
-            return Ok(new { token = result.Token });
-        }
-
         [HttpPost("create")]
         [Authorize(Roles = "Admin")]
         public async Task<IActionResult> Create(CreateUserDto userDto)
@@ -47,22 +36,22 @@ namespace UsersAPI.Controllers
             };
             var result = await _userService.Create(user, creator);
             if (!result.Success)
-                return BadRequest(result.Error);
+                return BadRequest(result.Info);
             return Ok(result.Success);
         }
 
-/*        [HttpPut("update-profile/{login}")]
+        [HttpPut("update-profile/{login}")]
         public async Task<IActionResult> UpdateProfile(string login, [FromBody] UpdateUserDto dto)
         {
             var requester = User.Identity?.Name!;
             var isAdmin = User.IsInRole("Admin");
 
             var result = await _userService.UpdateUserInfoAsync(login, dto, requester);
-            if (!result.IsSuccess)
-                return BadRequest(result.Error);
+            if (!result.Success)
+                return BadRequest(result.Info);
 
-            return Ok(result.User);
-        }*/
+            return Ok(result.Info);
+        }
 
         [HttpPut("update-password/{login}")]
         public async Task<IActionResult> UpdatePassword(string login, string newPassword)
@@ -71,7 +60,7 @@ namespace UsersAPI.Controllers
             var isAdmin = User.IsInRole("Admin");
 
             var result = await _userService.ChangePasswordAsync(login, newPassword, requester);
-/*            if (!result.IsSuccess)
+/*            if (!result)
                 return BadRequest(result.Error);*/
 
             return Ok("Password updated successfully.");
@@ -85,8 +74,8 @@ namespace UsersAPI.Controllers
             var isAdmin = User.IsInRole("Admin");
 
             var result = await _userService.ChangeLoginAsync(login,newLogin, requester);
-/*            if (!result.IsSuccess)
-                return BadRequest(result.Error);*/
+            if (!result.Success)
+                return BadRequest(result.Info);
 
             return Ok("Login updated successfully.");
         }
@@ -113,13 +102,14 @@ namespace UsersAPI.Controllers
 
         [HttpPost("login")]
         [AllowAnonymous]
-        public async Task<IActionResult> Login([FromBody] LoginRequest request)
+        public async Task<IActionResult> Login(string login, string password)
         {
-            var user = await _userService.GetByCredentialsAsync(request.Login, request.Password);
-            if (user == null) return Unauthorized("Invalid credentials");
+            var result = await _authService.AuthenticateAsync(login, password);
 
-            var token = _authService.GenerateToken(user);
-            return Ok(new { token });
+            if (!result.IsSuccess)
+                return Unauthorized(new { error = result.Error });
+
+            return Ok(new { token = result.Token });
         }
 
         [HttpGet("me")]
@@ -142,7 +132,7 @@ namespace UsersAPI.Controllers
         {
             var admin = User.Identity?.Name ?? "";
             var result = await _userService.Delete(login, admin);
-            return result.Success ? Ok() : BadRequest(result.Error);
+            return result.Success ? Ok() : BadRequest(result.Info);
         }
 
         [HttpPut("restore/{login}")]
@@ -150,7 +140,7 @@ namespace UsersAPI.Controllers
         public async Task<IActionResult> Restore(string login)
         {
             var result = await _userService.RestoreAsync(login);
-            return result.Success ? Ok() : BadRequest(result.Error);
+            return result.Success ? Ok() : BadRequest(result.Info);
         }
     }
 

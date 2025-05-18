@@ -1,4 +1,5 @@
 ﻿using BLL.Services;
+using BLL.Services.Abstractions;
 using Core.Entities;
 using DAL.Contexts;
 using DAL.Repositories.Abstractions;
@@ -18,7 +19,7 @@ namespace UsersAPI
         private static async Task SeedAdminUser(IServiceProvider services)
         {
             var repos = services.GetRequiredService<IUserRepository>();
-            var userService = services.GetRequiredService<UserService>();
+            var userService = services.GetRequiredService<IUserService>();
 
             var adminUser = await repos.GetByLoginAsync("admin");
 

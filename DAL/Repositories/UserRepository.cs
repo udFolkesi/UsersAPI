@@ -55,15 +55,5 @@ namespace DAL.Repositories
             _context.Users.Update(user);
             await _context.SaveChangesAsync();
         }
-
-        public Task<User?> GetByIdAsync(int id)
-        {
-            throw new NotImplementedException();
-        }
-
-        public Task<IEnumerable<User>> GetAllAsync()
-        {
-            throw new NotImplementedException();
-        }
     }
 }

@@ -7,9 +7,9 @@ using System.Threading.Tasks;
 
 namespace Core.Response.Abstractions
 {
-    public interface IBaseResponse
+    public interface IResult
     {
-        bool IsSuccess { get; }
-        string? ErrorMessage { get; }
+        bool Success { get; }
+        string? Info { get; }
     }
 }
