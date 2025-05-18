@@ -60,13 +60,12 @@ namespace UsersAPI.Controllers
             var isAdmin = User.IsInRole("Admin");
 
             var result = await _userService.ChangePasswordAsync(login, newPassword, requester);
-/*            if (!result)
-                return BadRequest(result.Error);*/
+            if (!result.Success)
+                return BadRequest(result.Info);
 
             return Ok("Password updated successfully.");
         }
 
-        // 4. Обновление логина
         [HttpPut("update-login/{login}")]
         public async Task<IActionResult> UpdateLogin(string login, string newLogin)
         {
@@ -124,7 +123,11 @@ namespace UsersAPI.Controllers
 
         [HttpGet("older-than/{age}")]
         [Authorize(Roles = "Admin")]
-        public async Task<IActionResult> GetOlderThan(int age) => Ok(await _userService.GetOlderThanAsync(age));
+        public async Task<IActionResult> GetOlderThan(int age)
+        {
+            var users = await _userService.GetOlderThanAsync(age);
+            return Ok(users);
+        }
 
         [HttpDelete("{login}")]
         [Authorize(Roles = "Admin")]

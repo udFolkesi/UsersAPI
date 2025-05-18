@@ -8,7 +8,7 @@ namespace BLL.Services.Abstractions
     {
         Task<IResult> Create(User user, string creator);
         Task<IResult> UpdateUserInfoAsync(string login, UpdateUserDto userDto, string modifiedBy);
-        Task<string?> ChangePasswordAsync(string login, string newPassword, string modifiedBy);
+        Task<IResult> ChangePasswordAsync(string login, string newPassword, string modifiedBy);
         Task<IResult> ChangeLoginAsync(string currentLogin, string newLogin, string modifiedBy);
         Task<IEnumerable<User>> GetActiveUsersAsync();
         Task<User?> GetByLoginAsync(string login);

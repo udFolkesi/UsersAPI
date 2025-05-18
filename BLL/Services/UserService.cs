@@ -60,14 +60,14 @@ namespace BLL.Services
             return new Result(true, "Info updated successfully");
         }
 
-        public async Task<string?> ChangePasswordAsync(string login, string newPassword, string modifiedBy)
+        public async Task<IResult> ChangePasswordAsync(string login, string newPassword, string modifiedBy)
         {
             var user = await _userRepository.GetByLoginAsync(login);
             if (user == null)
-                return "User not found";
+                return new Result(false, "User not found");
 
             if (user.RevokedOn != null)
-                return "User deleted";
+                return new Result(false, "User deleted");
 
             user.Password = newPassword;
             user.ModifiedOn = DateTime.UtcNow;
@@ -79,10 +79,10 @@ namespace BLL.Services
             });
 
             if (!validationResult.IsValid)
-                return string.Join("; ", validationResult.Errors.Select(e => e.ErrorMessage));
+                return new Result(false, string.Join("; ", validationResult.Errors.Select(e => e.ErrorMessage)));
 
             await _userRepository.UpdateAsync(user);
-            return null;
+            return new Result(true, "Password changed successfully");
         }
 
         public async Task<IResult> ChangeLoginAsync(string currentLogin, string newLogin, string modifiedBy)
